@@ -1,0 +1,7 @@
+.git
+.github
+Makefile
+Dockerfile
+.dockerignore
+node_modules
+.next
