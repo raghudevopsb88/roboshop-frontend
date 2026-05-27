@@ -8,21 +8,21 @@ if [ -f /data/params ]; then
     set +a
 fi
 
-export NGINX_PORT="${NGINX_PORT:-8080}"
-export CATALOGUE_HOST="${CATALOGUE_HOST:-roboshop-catalogue}"
-export CATALOGUE_PORT="${CATALOGUE_PORT:-8080}"
-export USER_HOST="${USER_HOST:-roboshop-user}"
-export USER_PORT="${USER_PORT:-8080}"
-export CART_HOST="${CART_HOST:-roboshop-cart}"
-export CART_PORT="${CART_PORT:-8080}"
-export SHIPPING_HOST="${SHIPPING_HOST:-roboshop-shipping}"
-export SHIPPING_PORT="${SHIPPING_PORT:-8080}"
-export PAYMENT_HOST="${PAYMENT_HOST:-roboshop-payment}"
-export PAYMENT_PORT="${PAYMENT_PORT:-8080}"
-export RATINGS_HOST="${RATINGS_HOST:-roboshop-ratings}"
-export RATINGS_PORT="${RATINGS_PORT:-8080}"
-export ORDERS_HOST="${ORDERS_HOST:-roboshop-orders}"
-export ORDERS_PORT="${ORDERS_PORT:-8080}"
+: "${NGINX_PORT:?NGINX_PORT is required}"
+: "${CATALOGUE_HOST:?CATALOGUE_HOST is required}"
+: "${CATALOGUE_PORT:?CATALOGUE_PORT is required}"
+: "${USER_HOST:?USER_HOST is required}"
+: "${USER_PORT:?USER_PORT is required}"
+: "${CART_HOST:?CART_HOST is required}"
+: "${CART_PORT:?CART_PORT is required}"
+: "${SHIPPING_HOST:?SHIPPING_HOST is required}"
+: "${SHIPPING_PORT:?SHIPPING_PORT is required}"
+: "${PAYMENT_HOST:?PAYMENT_HOST is required}"
+: "${PAYMENT_PORT:?PAYMENT_PORT is required}"
+: "${RATINGS_HOST:?RATINGS_HOST is required}"
+: "${RATINGS_PORT:?RATINGS_PORT is required}"
+: "${ORDERS_HOST:?ORDERS_HOST is required}"
+: "${ORDERS_PORT:?ORDERS_PORT is required}"
 
 mkdir -p /tmp/client_temp /tmp/proxy_temp /tmp/fastcgi_temp /tmp/uwsgi_temp /tmp/scgi_temp
 
