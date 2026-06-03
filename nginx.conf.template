@@ -84,6 +84,11 @@ http {
             add_header Cache-Control "public";
         }
 
+        location /send {
+            access_log off;
+            return 200 "OK\n";
+        }
+
         location /nginx-health {
             access_log off;
             return 200 "OK\n";
