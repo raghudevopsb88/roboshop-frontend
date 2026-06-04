@@ -9,7 +9,12 @@ events {
 http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
-    access_log /dev/stdout;
+    log_format main '$remote_addr - $remote_user [$time_local] '
+                    '"$request" $status $body_bytes_sent '
+                    'upstream=$upstream_addr upstream_status=$upstream_status '
+                    'upstream_time=$upstream_response_time request_time=$request_time '
+                    '"$http_user_agent"';
+    access_log /dev/stdout main;
     sendfile on;
     keepalive_timeout 65;
 
@@ -36,11 +41,13 @@ http {
         }
 
         location /api/cart/ {
-            rewrite ^/api/(.*)$ /$1 break;
+            rewrite ^/api/cart/(.*)$ /cart/$1 break;
             proxy_pass http://${CART_HOST}:${CART_PORT};
             proxy_connect_timeout 10s;
             proxy_send_timeout 60s;
             proxy_read_timeout 60s;
+            proxy_next_upstream error timeout http_502 http_503;
+            proxy_next_upstream_tries 2;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
