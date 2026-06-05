@@ -95,6 +95,13 @@ http {
             add_header Cache-Control "public";
         }
 
+        # Orders service POSTs here after checkout; no notification microservice in this stack yet.
+        location = /notification/send {
+            access_log off;
+            default_type application/json;
+            return 200 '{"status":"OK"}';
+        }
+
         location /send {
             access_log off;
             return 200 "OK\n";
