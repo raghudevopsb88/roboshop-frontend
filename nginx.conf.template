@@ -24,25 +24,32 @@ http {
         root /usr/share/nginx/html;
         index index.html;
 
+        # Re-resolve K8s Service ClusterIPs on each request (avoids stale IP after helm service recreate).
+        resolver ${DNS_RESOLVER} valid=10s ipv6=off;
+        resolver_timeout 5s;
+
         location /api/catalogue/ {
+            set $catalogue_upstream ${CATALOGUE_HOST}:${CATALOGUE_PORT};
             rewrite ^/api/catalogue/(.*)$ /$1 break;
-            proxy_pass http://${CATALOGUE_HOST}:${CATALOGUE_PORT};
+            proxy_pass http://$catalogue_upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
 
         location /api/user/ {
+            set $user_upstream ${USER_HOST}:${USER_PORT};
             rewrite ^/api/user/(.*)$ /$1 break;
-            proxy_pass http://${USER_HOST}:${USER_PORT};
+            proxy_pass http://$user_upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
 
         location /api/cart/ {
+            set $cart_upstream ${CART_HOST}:${CART_PORT};
             rewrite ^/api/cart/(.*)$ /cart/$1 break;
-            proxy_pass http://${CART_HOST}:${CART_PORT};
+            proxy_pass http://$cart_upstream;
             proxy_connect_timeout 10s;
             proxy_send_timeout 90s;
             proxy_read_timeout 90s;
@@ -55,32 +62,36 @@ http {
         }
 
         location /api/shipping/ {
+            set $shipping_upstream ${SHIPPING_HOST}:${SHIPPING_PORT};
             rewrite ^/api/(.*)$ /$1 break;
-            proxy_pass http://${SHIPPING_HOST}:${SHIPPING_PORT};
+            proxy_pass http://$shipping_upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
 
         location /api/payment/ {
+            set $payment_upstream ${PAYMENT_HOST}:${PAYMENT_PORT};
             rewrite ^/api/(.*)$ /$1 break;
-            proxy_pass http://${PAYMENT_HOST}:${PAYMENT_PORT};
+            proxy_pass http://$payment_upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
 
         location /api/ratings {
+            set $ratings_upstream ${RATINGS_HOST}:${RATINGS_PORT};
             rewrite ^/api/(.*)$ /$1 break;
-            proxy_pass http://${RATINGS_HOST}:${RATINGS_PORT};
+            proxy_pass http://$ratings_upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         }
 
         location /api/orders/ {
+            set $orders_upstream ${ORDERS_HOST}:${ORDERS_PORT};
             rewrite ^/api/(.*)$ /$1 break;
-            proxy_pass http://${ORDERS_HOST}:${ORDERS_PORT};
+            proxy_pass http://$orders_upstream;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;

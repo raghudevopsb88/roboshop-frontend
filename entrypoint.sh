@@ -26,7 +26,11 @@ fi
 
 mkdir -p /tmp/client_temp /tmp/proxy_temp /tmp/fastcgi_temp /tmp/uwsgi_temp /tmp/scgi_temp
 
-envsubst '${NGINX_PORT} ${CATALOGUE_HOST} ${CATALOGUE_PORT} ${USER_HOST} ${USER_PORT} ${CART_HOST} ${CART_PORT} ${SHIPPING_HOST} ${SHIPPING_PORT} ${PAYMENT_HOST} ${PAYMENT_PORT} ${RATINGS_HOST} ${RATINGS_PORT} ${ORDERS_HOST} ${ORDERS_PORT}' \
+# Cluster DNS (from pod resolv.conf) — nginx caches upstream IPs without this + variable proxy_pass.
+export DNS_RESOLVER="${DNS_RESOLVER:-$(awk '/^nameserver/{print $2; exit}' /etc/resolv.conf)}"
+: "${DNS_RESOLVER:?DNS_RESOLVER is required}"
+
+envsubst '${NGINX_PORT} ${DNS_RESOLVER} ${CATALOGUE_HOST} ${CATALOGUE_PORT} ${USER_HOST} ${USER_PORT} ${CART_HOST} ${CART_PORT} ${SHIPPING_HOST} ${SHIPPING_PORT} ${PAYMENT_HOST} ${PAYMENT_PORT} ${RATINGS_HOST} ${RATINGS_PORT} ${ORDERS_HOST} ${ORDERS_PORT}' \
     < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 exec nginx -g 'daemon off;' -c /etc/nginx/nginx.conf
