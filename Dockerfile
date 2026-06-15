@@ -6,7 +6,9 @@ COPY . .
 RUN npm run build
 
 FROM docker.io/redhat/ubi9:latest
-RUN dnf install -y nginx gettext && dnf clean all
+RUN dnf install -y nginx gettext \
+    && dnf update -y \
+    && dnf clean all
 WORKDIR /usr/share/nginx/html
 COPY --from=builder /app/out .
 COPY nginx.conf.template /etc/nginx/nginx.conf.template
